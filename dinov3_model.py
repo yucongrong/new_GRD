@@ -293,7 +293,7 @@ class DINOv3(nn.Module):
         ])
         ckpt = torch.load(weight_path, map_location=device)
         self.backbone.load_state_dict(ckpt, strict=False)
-        print("✅ 官方DINOv3权重加载成功！结构100%匹配！")
+        print("官方DINOv3权重加载成功！结构100%匹配！")
 
     def forward(self, x, original_imgs=None):
         return F.normalize(self.backbone(x, original_imgs=original_imgs), dim=-1)

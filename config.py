@@ -1,6 +1,7 @@
 import torch
 from functools import partial
 import torch.nn as nn
+from layers import Mlp, SwiGLUFFN
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 WEIGHT_PATH = r"G:\dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth"
@@ -17,7 +18,6 @@ norm_layer_dict = {
     "layernormbf16": partial(nn.LayerNorm, eps=1e-5),
 }
 
-from layers import Mlp, SwiGLUFFN
 ffn_layer_dict = {
     "mlp": Mlp,
     "swiglu": SwiGLUFFN,

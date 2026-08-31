@@ -80,7 +80,7 @@ def apply_pca_whitening(pca_obj, feat_np: np.ndarray, whiten: bool, eps: float =
     return feat_proj
 
 
-# ========= PWs entropy whitening =========
+
 def pws_fit(XText: np.ndarray, dim: int):
     os.environ["OMP_NUM_THREADS"] = "2"
     os.environ["MKL_NUM_THREADS"] = "2"
@@ -149,7 +149,7 @@ def load_pws_param(load_path: str):
     )
 
 
-# ========= Random Projection =========
+
 def random_projection_get_matrix_torch(orig_dim: int, target_dim: int, seed: int, device="cpu") -> torch.Tensor:
     torch.manual_seed(seed)
     R_torch = torch.normal(mean=0.0, std=1.0, size=(orig_dim, target_dim), device=device)
@@ -225,7 +225,7 @@ def gwl_fit(XTrain: np.ndarray, XTest: np.ndarray, dim: int) -> GWLModel:
         "XTrain_fit": XTrain.astype(np.float32).copy()
     }
     return GWLModel(dw_stats, dim)
-# ===================== PCA‑p‑whitening 幂白化（复刻MATLAB） =====================
+
 def PCA_p_whitening(features: np.ndarray, dim: int, p: int = 3, eps: float = 1e-5) -> np.ndarray:
 
     norm = np.linalg.norm(features, axis=1, keepdims=True)
@@ -278,10 +278,7 @@ class PCAPWhiteningModel:
         self.eps = eps
 
     def transform(self, X: np.ndarray) -> np.ndarray:
-        """
-        X: (N,D)输入原始特征
-        return: (N, dim)
-        """
+
         norm = np.linalg.norm(X, axis=1, keepdims=True)
         features_data = X / (norm + 1e-12)
         features_data = np.nan_to_num(features_data, nan=0.0)
@@ -306,14 +303,7 @@ class PCAPWhiteningModel:
 
 
 def pca_p_whitening_fit(train_feat: np.ndarray, dim: int, p: int = 3, eps: float = 1e-5) -> PCAPWhiteningModel:
-    """
-    fit阶段：只用图库特征训练，保存U,S,mu等统计量
-    :param train_feat: 图库db_feat (N,D)
-    :param dim:输出维度
-    :param p:幂指数
-    :param eps:epsilon
-    :return:PCAPWhiteningModel对象，调用transform处理图库/查询
-    """
+
     norm = np.linalg.norm(train_feat, axis=1, keepdims=True)
     features_data = train_feat / (norm + 1e-12)
     features_data = np.nan_to_num(features_data, nan=0.0)
@@ -330,7 +320,7 @@ def pca_p_whitening_fit(train_feat: np.ndarray, dim: int, p: int = 3, eps: float
     sigma = (x_train @ x_train.T) / n_sample
     U, S, _ = np.linalg.svd(sigma, full_matrices=True)
 
-    # 保存参考均值
+
     x_test_ref = features_data.T
     mu_test_ref = np.mean(x_test_ref, axis=1, keepdims=True)
 
